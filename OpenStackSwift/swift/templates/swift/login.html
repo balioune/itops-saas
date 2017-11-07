@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>ESEO Swift Project - Keystone login</title>
+        <!-- Bootstrap core CSS-->
+        <link href="{% static '/vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+        <!-- Custom fonts for this template-->
+        <link href="{% static '/vendor/font-awesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css">
+        <!-- Custom styles for this template-->
+        <link href="{% static '/css/sb-admin.css' %}" rel="stylesheet">
+    </head>
+
+    <body class="bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <a href="login.html"><img height ="175" width="600" src="{% static '/img/logo_ITOps.png' %}" alt="Storage IT & Ops"
+				title="ESEO SWIFT PROJECT"></a>
+            </div>
+            <div class="card card-login mx-auto mt-2">
+                <div class="card-header" style="background-color: #9a9696;">Login</div>
+                <div class="card-body" style="background-color: #9a9696;">
+                    <form action="{% url "login" %}" method="post">
+			{% csrf_token %}
+                        <div class="form-group">
+                            <label for="tenant">Sélectionnez votre tenant</label>
+                            <select class="form-control" id="id_tenant" name="tenant">
+                                <option>Admin</option>
+                                <option>Demo</option>
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="identifiant">Identifiant</label>
+                            <input class="form-control" id="id_identifiant" type="text" name="identifiant" placeholder="Entrez votre identifiant" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mdp">Mot de passe</label>
+                            <input class="form-control" id="id_motDePasse" type="password"  name="motDePasse" placeholder="Password" required>
+                        </div>
+                </div>
+                <input type="submit" value="Login" class="btn btn-primary btn-block">
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static '/vendor/jquery/jquery.js' %}"></script>
+    <script src="{% static '/vendor/popper/popper.js' %}"></script>
+    <script src="{% static '/vendor/bootstrap/js/bootstrap.js' %}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{% static '/vendor/jquery-easing/jquery.easing.js' %}"></script>
+</body>
+
+</html>

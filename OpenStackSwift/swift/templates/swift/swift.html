@@ -1,0 +1,420 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>ESEO Swift Project - Home</title>
+        <!-- Bootstrap core CSS-->
+        <link href="{% static '/vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+        <!-- Custom fonts for this template-->
+        <link href="{% static '/vendor/font-awesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css">
+        <!-- Page level plugin CSS-->
+        <link href="{% static '/vendor/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet">
+        <!-- Custom styles for this template-->
+        <link href="{% static '/css/sb-admin.css' %}" rel="stylesheet">
+
+    </head>
+    <body class="fixed-nav sticky-footer bg-dark" id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+            <a class="navbar-brand" href="index.html"><img height ="30" width="30" src="{% static '/img/logoESP.png' %}" alt="ESEO SWIFT PROJECT"
+                                                           title="ESEO SWIFT PROJECT">Eseo Swift Project</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+                    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+                        <a class="nav-link" href="swift.html">
+                            <i class="fa fa-fw fa-dashboard"></i>
+                            <span class="nav-link-text">Swift Board</span>
+                        </a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav sidenav-toggler">
+                    <li class="nav-item">
+                        <a class="nav-link text-center" id="sidenavToggler">
+                            <i class="fa fa-fw fa-angle-left"></i>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav sidenav-toggler">
+                    <li class="nav-item">
+                        <i class="fa fa-fw fa-angle-left"></i>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+		    {% if request.session.userToken == '' %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+                            <i class="fa fa-fw fa-sign-out"></i>Se connecter</a>
+                    </li>
+		    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+                            <i class="fa fa-fw fa-sign-out"></i>Se déconnecter</a>
+                    </li>
+	            {% endif %} 
+                </ul>
+            </div>
+        </nav>
+        <div class="content-wrapper">
+            <div class="container-fluid ">
+                <div class="row">
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_conteneur">
+                            Créer conteneur
+                        </button>
+                        <br>
+                        <br>
+                        <div id="accordion" role="tablist" aria-multiselectable="true">
+                            {% for conteneur in conteneurs %}
+                            <div class="card">
+                                <div class="card-header" role="tab" id="heading{{conteneur.name}}">
+                                    <div class="row"
+                                         <h5 class="mb-0">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{conteneur.name}}" aria-expanded="true" aria-controls="collapse{{conteneur.name}}">
+                                                {{conteneur.name}}
+                                            </a>
+                                        </h5>
+                                        <form action="{% url "swift" %}" method="post">
+                                              {% csrf_token %}
+                                              <input type="hidden" name="conteneurName3" value="{{conteneur.name}}">
+                                            <button type="submit" style="background-color:transparent; border-color:transparent;">
+                                                <i class="fa fa-play"></i>
+                                            </button>	
+                                        </form>
+                                        <div class="col-md-6">
+                                            <a data-toggle="modal" data-target="#deleteConteneur{{forloop.counter}}"><span class="fa fa-trash"></span></a>
+                                            <div class="modal fade" id="deleteConteneur{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title custom_align" id="Heading">Supprimer un conteneur</h4>
+                                                        </div>
+
+
+                                                        <div class="modal-body">
+                                                            {% if conteneur.count <= 0 %}
+                                                            <div class="alert alert-warning"><span class="fa fa-warning"></span> Etes-vous sûr de vouloir supprimer le   conteneur {{conteneur.name}} ?</div>
+                                                            {% else %}
+                                                            <div class="alert alert-danger"><span class="fa fa-warning"></span> Attention, le conteneur doit être vide pour être supprimé !</div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="modal-footer ">
+
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span>Annuler</button>
+                                                            {% if conteneur.count == 0 %}
+                                                            <form action="{% url "swift" %}" method="post">
+                                                                  {% csrf_token %}
+                                                                  <input type="hidden" name="conteneurName2" value="{{conteneur.name}}">
+                                                                <input type="submit" class="btn btn-success" ><span class="fa fa-ok"></span></button>	
+                                                            </form>
+                                                            {% endif %}                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="collapse{{conteneur.name}}" class="collapse show" role="tabpanel" aria-labelledby="heading{{conteneur.name}}">
+                                    <div class="card-block">
+                                        <ul>
+                                            <li>
+                                                Nombres d'objets : {{conteneur.count}}                                             
+                                            </li>
+                                            <li>
+                                                Taille : {{conteneur.size}} octets                                               
+                                            </li>                                          
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-8">
+                        <h2> Conteneur : {{conteneurName}} <button class="btn btn-primary btn-xs" style="width :12%" data-title="Upload" data-toggle="modal" data-target="#uploadObject" >Upload <span class="fa fa-download"></span></button></h2>
+                        <br>
+                        <div class="table-responsive">
+
+
+                            <table id="mytable" class="table table-bordred table-striped display">
+
+                                <thead>
+
+                                <th><input type="checkbox" id="checkall" /></th>
+                                <th>Nom</th>
+                                <th>Taille</th>
+                                <th>Afficher</th>
+                                <th>Supprimer</th>
+                                </thead>
+                                <tbody>
+                                    {% for objet in listeObjet %}
+                                    <tr>
+                                        <td><input type="checkbox" class="checkthis" /></td>
+                                        <td>{{objet.name}}</td>
+                                        <td>{{objet.size}} octets</td>
+                                        <td><p data-placement="top" data-toggle="tooltip" title="Afficher"><button class="btn btn-primary btn-xs" style="width :80%" data-title="Afficher" data-toggle="modal" data-target="#afficher{{forloop.counter}}" ><span class="fa fa-print"></span></button></p></td>
+                                        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" style="width :60%" data-title="Delete" data-toggle="modal" data-target="#delete{{forloop.counter}}" ><span class="fa fa-trash"></span></button></p></td>
+                                    </tr>
+                                <div class="modal fade" id="afficher{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="afficher" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title custom_align" id="Heading">{{objet.name}}</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% if objet.type == 'video' %}
+                                                <div class="d-flex justify-content-center">
+                                                    <video controls>
+                                                        <source src="{{objet.hash}}" type="video/mp4">
+                                                    </video>
+                                                </div>
+                                                {% elif objet.type == 'audio' %}
+                                                <audio controls>
+                                                    <source src="{{objet.hash}}" type="audio/mpeg">
+                                                </audio> 
+                                                {% elif objet.type == 'image' %}
+                                                <img src="{{objet.hash}}" width="100%"/>
+                                                {% elif objet.type == 'pdf' %}
+                                                <embed src="{{objet.hash}}" width="100%" height="450" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                                                {% else%}
+                                                Ce site ne supporte pas ce type de fichiers.
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="modal-footer ">
+                                                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal"><span class="fa fa-close" aria-hidden="true"></span>Close</button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content --> 
+                                    </div>
+                                    <!-- /.modal-dialog --> 
+                                </div>
+                                <div class="modal fade" id="delete{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title custom_align" id="Heading">Supprimer l'objet : {{objet.name}}</h4>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <div class="alert alert-danger"><span class="fa fa-warning"></span> Etes-vous sûr de vouloir supprimer cet objet ?</div>
+
+                                            </div>
+                                            <div class="modal-footer ">
+                                                <form action="{% url "swift" %}" method="post">
+                                                      {% csrf_token %}
+                                                      <input type="hidden" name="conteneurName4" value="{{conteneurName}}">
+                                                    <input type="hidden" name="objetName" value="{{objet.name}}">
+
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Annuler</button>
+                                                    <input type="submit" class="btn btn-success" ><span class="fa fa-ok"></span>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+
+                <div class="modal fade" id="telecharger" tabindex="-1" role="dialog" aria-labelledby="telecharger" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title custom_align" id="Heading">Download a container</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="file-loading">
+                                    <input id="input-b7" name="input-b7[]" multiple type="file" class="file" data-allowed-file-extensions='["csv", "txt"]'>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer ">
+                                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal"><span class="fa fa-close" aria-hidden="true"></span>Close</button>
+                                <button type="button" class="btn btn-warning btn-lg" ><span class="fa fa-download"></span> Update</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content --> 
+                    </div>
+                    <!-- /.modal-dialog --> 
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>
+<!-- /.container-fluid-->
+<!-- /.content-wrapper-->
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © ESEO Swift Project 2017</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+
+
+<!--Delete conteneur modal -->
+
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Voulez-vous vraiment vous déconnecter ?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                <a class="btn btn-primary" href="login.html">Se déconnecter</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Create contener Modal -->
+<div class="modal fade" id="Modal_conteneur" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Créer conteneur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url "swift" %}" method="post">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contener_name">Nom du conteneur</label>
+                        <input class="form-control" id="id_conteneurName" name="conteneurName" type="text"  placeholder="Entrez le nom du conteneur">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Créer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadObject" tabindex="-1" role="dialog" aria-labelledby="telecharger" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title custom_align" id="Heading">Upload an Object</h4>
+            </div>
+            <form action="{% url "swift" %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                    Veuillez parcourir vos fichiers afin de sélectionner votre fichier a uploader.
+
+                    <div class="file-loading">
+                        <input type="hidden" name="conteneurName5" value="{{conteneurName}}">
+                        <input name="objetPath" multiple type="file" class="file">
+                    </div>
+
+
+                    <div class="modal-footer ">
+                        <button type="button" class="btn btn-default btn-lg" data-dismiss="modal"><span class="fa fa-close" aria-hidden="true"></span>Annuler</button>
+                        <button type="submit" class="btn btn-warning btn-lg" ><span class="fa fa-download"></span> Upload</button>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <!-- /.modal-content --> 
+    </div>
+    <!-- /.modal-dialog --> 
+</div>
+<!-- Bootstrap core JavaScript-->
+<script src="{% static '/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static '/vendor/popper/popper.js' %}"></script>
+<script src="{% static '/vendor/bootstrap/js/bootstrap.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static '/vendor/jquery-easing/jquery.easing.js' %}"></script>
+<!-- Page level plugin JavaScript-->
+<script src="{% static '/vendor/chart.js/Chart.js' %}"></script>
+<script src="{% static '/vendor/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static '/vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static '/js/sb-admin.js' %}"></script>
+<!-- Custom scripts for this page-->
+<script src="{% static '/js/sb-admin-datatables.js' %}"></script>
+<script src="{% static '/js/sb-admin-charts.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    $("#mytable #checkall").click(function () {
+    if ($("#mytable #checkall").is(':checked')) {
+    $("#mytable input[type=checkbox]").each(function () {
+    $(this).prop("checked", true);
+    });
+
+    } else {
+    $("#mytable input[type=checkbox]").each(function () {
+    $(this).prop("checked", false);
+    });
+    }
+    });
+
+    $("[data-toggle=tooltip]").tooltip();
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).on('ready', function () {
+    $("#input-b7").fileinput({
+    showUpload: false,
+    maxFileCount: 10,
+    mainClass: "input-group-lg"
+    });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    $('#mytable').dataTable();
+    });
+</script>
+</div>
+</body>
+
+</html>
