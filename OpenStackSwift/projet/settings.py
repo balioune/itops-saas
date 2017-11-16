@@ -16,6 +16,16 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+KEYSTONE='http://192.168.150.15:5000/v2.0/tokens'
+
+"""
+# The followings 2 lines show the new authentication methods
+KEYSTONE ='http://192.168.122.95/identity/v2.0/tokens'
+KEYSTONE = 'http://192.168.122.95/identity/v3/auth/tokens'
+"""
+
+SWIFT='http://192.168.150.15:8080'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 

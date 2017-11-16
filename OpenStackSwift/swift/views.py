@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
 # Liste des imports :
@@ -15,6 +16,8 @@ import glob
 import os
 
 
+keystone_url = settings.KEYSTONE
+swift_url = settings.SWIFT
 
 #Fonction qui renvoi la page index.html quand on l'appelle
 #Fonction appelée dans urls.py
@@ -110,9 +113,10 @@ def swift(request):
         #conteneurs est la variable utilisée pour stocker la liste de conteneurs
         conteneurs=getContainerList(request)
         #conteneurName est la variable utilisée pour stocker le conteneur à visualiser
-        conteneurName = conteneurs[0].name
-        #listeObjet est la variable qui contient la liste d'objet du conteneur selectionné
-        listeObjet = getObjectList(request,conteneurName,True)
+        if len(conteneurs) > 0:
+            conteneurName = conteneurs[0].name
+            #listeObjet est la variable qui contient la liste d'objet du conteneur selectionné
+            listeObjet = getObjectList(request,conteneurName,True)
 
     
     #Enfin, on retourne la page avec les variables utilisées précédement dans la fonction.
@@ -154,12 +158,12 @@ def removeSession(request):
 def connexion(identifiant,motDePasse,tenant,request):
     
     # Initialisation de la requette
-    tokenUrl = 'http://192.168.150.15:5000/v2.0/tokens'
+    tokenUrl = keystone_url
     headersToken = {'content-type': 'application/json'}
     dataJson = '{"auth": {"tenantName": "'+tenant+'" , "passwordCredentials": {"username": "'+identifiant+'", "password": "'+motDePasse+'"}}}'
     
     # Envoi de la requette
-    requestToken = requests.post(tokenUrl, data=dataJson, headers=headersToken)
+    requestToken = requests.post(tokenUrl, data=dataJson, headers=headersToken, verify=False)
     
     # Si la réponse contient le mot 'erreur', alors l'authentification échoue
     test = requestToken.text.find('error')
@@ -188,12 +192,12 @@ def connexion(identifiant,motDePasse,tenant,request):
 # Fonction qui retourne la liste des conteneurs du tenant selectionné.
 def getContainerList(request):
 
-    # Création de la requette 
-    containerListUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'
+    # Création de la requette
+    containerListUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'
     # Création du header contentant les données permettant de s'identifier
     headersToken = {'X-Auth-Token': request.session['userToken']}
     # On effectue la requete 
-    requestContainerList = requests.get(containerListUrl+'?format=json', headers=headersToken)
+    requestContainerList = requests.get(containerListUrl+'?format=json', headers=headersToken, verify=False)
     # Puis on la transforme dans le format json, pour pouvoir lire les données recues. 
     responseContainerList = requestContainerList.json()
     containerList = []
@@ -212,22 +216,22 @@ def getContainerList(request):
 # Fonction permettant de créer un conteneur sur un tenant spécifique
 def createContainer(request,conteneurName):
     headersToken = {'X-Auth-Token': request.session['userToken']}
-    createContainerUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+conteneurName+'/'
-    requestCreateContainer = requests.put(createContainerUrl, headers=headersToken)
+    createContainerUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'+conteneurName+'/'
+    requestCreateContainer = requests.put(createContainerUrl, headers=headersToken, verify=False)
 
 # Fonction permettant de supprimer un conteneur sur un tenant spécifique
 def removeContainer(request,containerName):
     headersToken = {'X-Auth-Token': request.session['userToken']}
-    removeContainerUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'
-    requestRemoveContainer = requests.delete(removeContainerUrl, headers=headersToken)
+    removeContainerUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'
+    requestRemoveContainer = requests.delete(removeContainerUrl, headers=headersToken, verify=False)
 
 # Fonction permettant de récuperer la liste des objets dans un conteneur spécifique
 # L'attribut 'activate' permet, quand il est à 'true', de télécharger les objets du conteneur sur le serveur (voir fct readObject)
 def getObjectList(request,containerName,activate):
     # On initialise le requete permettant de récuperer la liste des objets puis on l'éxecute.
     headersToken = {'X-Auth-Token': request.session['userToken']}
-    objectListUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'
-    requestObjectList = requests.get(objectListUrl+'?format=json', headers=headersToken)
+    objectListUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'
+    requestObjectList = requests.get(objectListUrl+'?format=json', headers=headersToken, verify=False)
     responseObjectList = requestObjectList.json()
     objectList = []
     # On parcourt les données recues (un élement de la liste = un objet)
@@ -244,20 +248,21 @@ def getObjectList(request,containerName,activate):
 # Fonction permettant de supprimer un objet d'un conteneur spécifique
 def removeObject(request,containerName,objectName):
     headersToken = {'X-Auth-Token': request.session['userToken']}
-    removeObjectUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
-    requestRemoveObject = requests.delete(removeObjectUrl, headers=headersToken)
+    removeObjectUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
+    requestRemoveObject = requests.delete(removeObjectUrl, headers=headersToken, verify=False)
 
 # Fonction permettant d'uploader un objet dans un tenant spécifique
 def createObject(request,containerName,objectName,pathFile):
-    createObjectUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
-    requestCreateObject = requests.put(createObjectUrl, headers={'X-Auth-Token': request.session['userToken'], 'X-Detect-Content-Type' : 'true' }, data=open(pathFile,'rb'))
+    createObjectUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
+    #createObjectUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
+    requestCreateObject = requests.put(createObjectUrl, headers={'X-Auth-Token': request.session['userToken'], 'X-Detect-Content-Type' : 'true' }, data=open(pathFile,'rb'), verify=False)
 
 # Fonction permettant de lire un objet situé dans un conteneur en le téléchargeant dans un dossier temporaire 
 def readObject(request,containerName,objectName):
     
     # On crée et on execute la requete permettant de récupèrer l'objet en question
-    createObjectUrl = 'http://192.168.150.15:8080/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
-    r = requests.get(createObjectUrl, headers={'X-Auth-Token': request.session['userToken'], 'X-Detect-Content-Type' : 'true' })
+    createObjectUrl = swift_url + '/v1/AUTH_'+request.session['tenantId']+'/'+containerName+'/'+objectName
+    r = requests.get(createObjectUrl, headers={'X-Auth-Token': request.session['userToken'], 'X-Detect-Content-Type' : 'true' }, verify=False)
 
     #On génère un hash de 16 caractères de manière aléatoire
     hashRandom = binascii.hexlify(os.urandom(16))

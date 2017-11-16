@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>ESEO Swift Project - Home</title>
+        <title>IT&Ops Storage Application</title>
         <!-- Bootstrap core CSS-->
         <link href="{% static '/vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
         <!-- Custom fonts for this template-->
@@ -23,7 +23,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
             <a class="navbar-brand" href="index.html"><img height ="30" width="30" src="{% static '/img/logo_ITOps.png' %}" alt="IT&Ops Storage App"
-                                                           title="ESEO SWIFT PROJECT">IT and Ops App</a>
+                                                           title="IT&Ops SWIFT PROJECT">IT&Ops Storage Application</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,7 +32,7 @@
                     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
                         <a class="nav-link" href="swift.html">
                             <i class="fa fa-fw fa-dashboard"></i>
-                            <span class="nav-link-text">Swift Board</span>
+                            <span class="nav-link-text">Navigation Projet</span>
                         </a>
                     </li>
 
@@ -70,7 +70,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_conteneur">
-                            Créer conteneur
+                            Créer répertoire
                         </button>
                         <br>
                         <br>
@@ -97,15 +97,15 @@
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h4 class="modal-title custom_align" id="Heading">Supprimer un conteneur</h4>
+                                                            <h4 class="modal-title custom_align" id="Heading">Supprimer un repertoire</h4>
                                                         </div>
 
 
                                                         <div class="modal-body">
                                                             {% if conteneur.count <= 0 %}
-                                                            <div class="alert alert-warning"><span class="fa fa-warning"></span> Etes-vous sûr de vouloir supprimer le   conteneur {{conteneur.name}} ?</div>
+                                                            <div class="alert alert-warning"><span class="fa fa-warning"></span> Etes-vous sûr de vouloir supprimer le   répertoire {{conteneur.name}} ?</div>
                                                             {% else %}
-                                                            <div class="alert alert-danger"><span class="fa fa-warning"></span> Attention, le conteneur doit être vide pour être supprimé !</div>
+                                                            <div class="alert alert-danger"><span class="fa fa-warning"></span> Attention, le répertoire doit être vide pour être supprimé !</div>
                                                             {% endif %}
                                                         </div>
                                                         <div class="modal-footer ">
@@ -145,7 +145,7 @@
                     </div>
 
                     <div class="col-md-8">
-                        <h2> Conteneur : {{conteneurName}} <button class="btn btn-primary btn-xs" style="width :12%" data-title="Upload" data-toggle="modal" data-target="#uploadObject" >Upload <span class="fa fa-download"></span></button></h2>
+                        <h2> Répertoires <button class="btn btn-primary btn-xs" style="width :12%" data-title="Upload" data-toggle="modal" data-target="#uploadObject" >Upload <span class="fa fa-download"></span></button></h2>
                         <br>
                         <div class="table-responsive">
 
@@ -190,7 +190,7 @@
                                                 {% elif objet.type == 'image' %}
                                                 <img src="{{objet.hash}}" width="100%"/>
                                                 {% elif objet.type == 'pdf' %}
-                                                <embed src="{{objet.hash}}" width="100%" height="450" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                                                <embed src="{{objet.hash}}" width="100%" height="750" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
                                                 {% else%}
                                                 Ce site ne supporte pas ce type de fichiers.
                                                 {% endif %}
@@ -276,7 +276,7 @@
 <footer class="sticky-footer">
     <div class="container">
         <div class="text-center">
-            <small>Copyright © ESEO Swift Project 2017</small>
+            <small>Copyright © IT&Ops 2017</small>
         </div>
     </div>
 </footer>
@@ -312,7 +312,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Créer conteneur</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Créer un répertoire</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -321,8 +321,8 @@
                   {% csrf_token %}
                   <div class="modal-body">
                     <div class="form-group">
-                        <label for="contener_name">Nom du conteneur</label>
-                        <input class="form-control" id="id_conteneurName" name="conteneurName" type="text"  placeholder="Entrez le nom du conteneur">
+                        <label for="contener_name">Nom du repertoire</label>
+                        <input class="form-control" id="id_conteneurName" name="conteneurName" type="text"  placeholder="Entrez le nom du repertoire">
                     </div>
                 </div>
                 <div class="modal-footer">
